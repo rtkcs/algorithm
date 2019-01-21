@@ -1,5 +1,7 @@
 package eu.rtakacs.algorithms.list;
 
+import java.util.Iterator;
+
 /**
  * Boundary conditions:
  * <ul>
@@ -13,7 +15,7 @@ package eu.rtakacs.algorithms.list;
  *
  * @param <V>
  */
-public class LinkedList<V> {
+public class LinkedList<V> implements Iterable<V> {
 		
 	private Node<V> head;
 	private Node<V> tail;
@@ -55,13 +57,14 @@ public class LinkedList<V> {
 			this.previous = previous;
 		}
 
-		public int compareTo(LinkedList<V>.Node<V> o) {
-			return ((Comparable<V>)this.v).compareTo(o.getV()); 
-		}
-
 		@Override
 		public String toString() {
 			return "Node [v=" + v + "]";
+		}
+
+		@Override
+		public int compareTo(LinkedList<V>.Node<V> o) {
+			return ((Comparable<V>)this.v).compareTo(o.getV());
 		}
 
 	}
@@ -73,32 +76,124 @@ public class LinkedList<V> {
 	
 	public void addFirst(V v) {
 		Node<V> newFirst = new Node<V>(v);
+		
+		if(this.head==null) {
+			this.head = newFirst;
+			this.tail = newFirst;
+			++this.currentSize;
+			return;
+		}
+		
 		newFirst.setNext(this.head);
 		this.head.setPrevious(newFirst);
 		this.head = newFirst;
-		newFirst.setPrevious(this.head);
-		this.currentSize++;
+		++this.currentSize;
 	}
 	
 	public void addLast(V v) {
+		
+		if(this.tail==null) {
+			this.addFirst(v);
+			return;
+		}
+		
 		Node<V> newLast = new Node<V>(v);
 		this.tail.setNext(newLast);
 		newLast.setPrevious(this.tail);
 		this.tail = newLast;
+		++this.currentSize;
 		
 	}
 	
 	public Node removeFirst() {
-		return null;
+		// empty list
+		if(this.head==null) {
+			return null;
+		}
+		// 1 item
+		if(this.head.equals(this.tail)) {
+			Node<V> removedNode = this.head;
+			this.head = null;
+			this.tail = null;
+			--this.currentSize;
+			return removedNode;
+		}
+		Node<V> removedNode = this.head;
+		
+		this.head = this.head.getNext();
+		this.head.setPrevious(null);
+		--this.currentSize;
+		
+		removedNode.setNext(null);
+		removedNode.setPrevious(null);
+		return removedNode;
 	}
 	
 	public Node removeLast() {
-		return null;
+		// empty list
+		if(this.tail==null) {
+			return null;
+		}
+		// 1 Node 
+		if(this.tail.equals(this.head)) {
+			Node<V> removedNode = this.tail;
+			this.head = null;
+			this.tail = null;
+			--this.currentSize;
+			return removedNode;
+		}
+		
+		Node<V> removedNode = this.tail;
+		this.tail = this.tail.getPrevious();
+		this.tail.setNext(null);
+		
+		--this.currentSize;
+		
+		removedNode.setNext(null);
+		removedNode.setPrevious(null);
+		return removedNode;
+	}
+	
+	public boolean isEmpty() {
+		return this.currentSize==0;
+	}
+	
+	public int size() {
+		return this.currentSize;
 	}
 
+	@Override
+	public Iterator<V> iterator() {
+		
+		return new ListIterator();
+	}
+	
+	class ListIterator implements Iterator<V>{
+		
+		Node<V> currentNode;
+		
+		ListIterator(){
+			this.currentNode = LinkedList.this.head;
+		}
+		
+		@Override
+		public boolean hasNext() {
+			return this.currentNode!=null;
+		}
+
+		@Override
+		public V next() {
+			V value = this.currentNode.getV();
+			this.currentNode = this.currentNode.getNext();
+			return value;
+		}
+	}
+	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
 	}
+
+
 
 }
