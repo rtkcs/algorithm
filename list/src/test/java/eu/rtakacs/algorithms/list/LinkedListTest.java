@@ -25,7 +25,6 @@ public class LinkedListTest extends TestCase {
 		}
 		assertEquals(100, list.size());
 		
-		Iterator<Integer> iterator = list.iterator();
 		for(int i=0;i<100;i++) {
 			list.removeFirst();
 		}
@@ -42,7 +41,6 @@ public class LinkedListTest extends TestCase {
 		}
 		assertEquals(100, list.size());
 		
-		Iterator<Integer> iterator = list.iterator();
 		for(int i=0;i<100;i++) {
 			list.removeLast();
 		}
@@ -77,7 +75,6 @@ public class LinkedListTest extends TestCase {
 		}
 		assertEquals(false, list.isEmpty());
 		
-		Iterator<Integer> iterator = list.iterator();
 		for(int i=0;i<100;i++) {
 			list.removeLast();
 		}
