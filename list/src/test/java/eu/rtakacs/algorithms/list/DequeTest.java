@@ -4,6 +4,7 @@
 package eu.rtakacs.algorithms.list;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import junit.framework.TestCase;
 
@@ -52,7 +53,12 @@ public class DequeTest extends TestCase {
 	 */
 	public void testRemoveFirst() {
 		Deque<Integer> list = new Deque<Integer>();
-		list.removeFirst();
+		try {
+			list.removeFirst();
+			fail("Missing exception");
+		} catch(NoSuchElementException e) {
+			assertEquals("Deque is empty, can not remove element.", e.getMessage());
+		}
 	}
 
 	/**
@@ -60,7 +66,12 @@ public class DequeTest extends TestCase {
 	 */
 	public void testRemoveLast() {
 		Deque<Integer> list = new Deque<Integer>();
-		list.removeLast();
+		try {		
+			list.removeLast();
+			fail("Missing exception");
+		} catch(NoSuchElementException e) {
+			assertEquals("Deque is empty, can not remove element.", e.getMessage());
+		}
 	}
 
 	/**
@@ -85,7 +96,11 @@ public class DequeTest extends TestCase {
 	 * Test method for {@link eu.rtakacs.algorithms.list.LinkedList#size()}.
 	 */
 	public void testSize() {
-		fail("Not yet implemented");
+		Deque<Integer> list = new Deque<>();
+		list.addFirst(1);
+		assertEquals(1, list.size());
+		list.addLast(2);
+		assertEquals(2, list.size());
 	}
 
 	/**

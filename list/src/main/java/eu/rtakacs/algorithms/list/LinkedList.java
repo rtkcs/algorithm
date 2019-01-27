@@ -21,7 +21,7 @@ public class LinkedList<V> implements Iterable<V> {
 	private Node<V> tail;
 	private int currentSize;
 	
-	class Node<V> implements Comparable<Node<V>> {
+	class Node<V>/* implements Comparable<Node<V>> */ {
 
 		private V v;
 		private Node<V> next;
@@ -61,16 +61,11 @@ public class LinkedList<V> implements Iterable<V> {
 		public String toString() {
 			return "Node [v=" + v + "]";
 		}
-
+		/*
 		public int compareTo(LinkedList<V>.Node<V> o) {
 			return ((Comparable<V>)this.v).compareTo(o.getV());
 		}
-
-//		public int compareTo(LinkedList<V>.Node<V> o) {
-//			// TODO Auto-generated method stub
-//			return 0;
-//		}
-
+		*/
 	}
 	
 	LinkedList(){

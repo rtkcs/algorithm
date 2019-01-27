@@ -1,17 +1,18 @@
 /**
  * 
  */
-package eu.rtakacs.algorithms.list;
+
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import junit.framework.TestCase;
 
 /**
- * @author rober
+ * @author Robert Takacs
  *
  */
-public class LinkedListTest extends TestCase {
+public class DequeTest extends TestCase {
 	
 
 	/**
@@ -19,7 +20,7 @@ public class LinkedListTest extends TestCase {
 	 */
 	public void testAddFirst() {
 		
-		LinkedList<Integer> list = new LinkedList<Integer>();
+		Deque<Integer> list = new Deque<Integer>();
 		for(int i=0;i<100;i++) {
 			list.addFirst(i);
 		}
@@ -35,7 +36,7 @@ public class LinkedListTest extends TestCase {
 	 * Test method for {@link eu.rtakacs.algorithms.list.LinkedList#addLast(java.lang.Object)}.
 	 */
 	public void testAddLast() {
-		LinkedList<Integer> list = new LinkedList<Integer>();
+		Deque<Integer> list = new Deque<Integer>();
 		for(int i=0;i<100;i++) {
 			list.addLast(i);
 		}
@@ -51,24 +52,33 @@ public class LinkedListTest extends TestCase {
 	 * Test method for {@link eu.rtakacs.algorithms.list.LinkedList#removeFirst()}.
 	 */
 	public void testRemoveFirst() {
-		LinkedList<Integer> list = new LinkedList<Integer>();
-		list.removeFirst();
+		Deque<Integer> list = new Deque<Integer>();
+		try {
+			list.removeFirst();
+			fail("Missing exception");
+		} catch(NoSuchElementException e) {
+			assertEquals("Deque is empty, can not remove element.", e.getMessage());
+		}
 	}
 
 	/**
 	 * Test method for {@link eu.rtakacs.algorithms.list.LinkedList#removeLast()}.
 	 */
 	public void testRemoveLast() {
-		LinkedList<Integer> list = new LinkedList<Integer>();
-		list.removeLast();
-		
+		Deque<Integer> list = new Deque<Integer>();
+		try {		
+			list.removeLast();
+			fail("Missing exception");
+		} catch(NoSuchElementException e) {
+			assertEquals("Deque is empty, can not remove element.", e.getMessage());
+		}
 	}
 
 	/**
 	 * Test method for {@link eu.rtakacs.algorithms.list.LinkedList#isEmpty()}.
 	 */
 	public void testIsEmpty() {
-		LinkedList<Integer> list = new LinkedList<Integer>();
+		Deque<Integer> list = new Deque<Integer>();
 		assertEquals(true, list.isEmpty());
 		
 		for(int i=0;i<100;i++) {
@@ -86,7 +96,7 @@ public class LinkedListTest extends TestCase {
 	 * Test method for {@link eu.rtakacs.algorithms.list.LinkedList#size()}.
 	 */
 	public void testSize() {
-		LinkedList<Integer> list = new LinkedList<>();
+		Deque<Integer> list = new Deque<>();
 		list.addFirst(1);
 		assertEquals(1, list.size());
 		list.addLast(2);
@@ -98,7 +108,7 @@ public class LinkedListTest extends TestCase {
 	 */
 	public void testIterator() {
 		
-		LinkedList<Integer> list = new LinkedList<Integer>();
+		Deque<Integer> list = new Deque<Integer>();
 		
 		for(int i=0;i<100;i++) {
 			list.addLast(i);

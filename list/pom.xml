@@ -12,8 +12,11 @@
 	<url>http://maven.apache.org</url>
 
 	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
+  		<maven.compiler.source>1.8</maven.compiler.source>
+  		<maven.compiler.target>1.8</maven.compiler.target>
+  		<project.build.sourceEncoding>CP1252</project.build.sourceEncoding>
+  	</properties>
+
 
 	<dependencies>
 		<dependency>
@@ -29,4 +32,5 @@
 			<version>1.0.0.0</version>
 		</dependency>
 	</dependencies>
+	
 </project>

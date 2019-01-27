@@ -1,4 +1,4 @@
-package eu.rtakacs.algorithms.list;
+
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -13,10 +13,10 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 	private int currentPosition;
 	private Item[] items;
 	
-	class RandomizedQueueIterator implements Iterator<Item> {
+	private class RandomizedQueueIterator implements Iterator<Item> {
 		
 		private int currentPosition;
-		private Item[] itemsIterator;
+		private final Item[] itemsIterator;
 		
 		RandomizedQueueIterator(){
 			this.currentPosition = 0;

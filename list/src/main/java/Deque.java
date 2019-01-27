@@ -1,9 +1,9 @@
-package eu.rtakacs.algorithms.list;
+
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import eu.rtakacs.algorithms.list.LinkedList.Node;
+
 
 public class Deque<Item> implements Iterable<Item> {
 	
@@ -11,13 +11,13 @@ public class Deque<Item> implements Iterable<Item> {
 	private Node<Item> tail;
 	private int currentSize;
 	
-	class Node<Item> /*implements Comparable<Node<Item>>*/ {
+	private class Node<Item> /* implements Comparable<Node<Item>> */ {
 
 		private Item item;
 		private Node<Item> next;
 		private Node<Item> previous;
 		
-		Node(Item i){
+		Node(Item i) {
 			this.item = i;
 			this.next = null;
 			this.previous = null;
@@ -59,20 +59,20 @@ public class Deque<Item> implements Iterable<Item> {
 */		
 	}
 	
-	class DequeIterator implements Iterator<Item>{
+	private class DequeIterator implements Iterator<Item> {
 		
 		Node<Item> currentNode;
 		
-		DequeIterator(){
+		DequeIterator() {
 			this.currentNode = Deque.this.head;
 		}
 		
 		public boolean hasNext() {
-			return this.currentNode!=null;
+			return this.currentNode != null;
 		}
 
 		public Item next() {
-			if(hasNext()) {
+			if (hasNext()) {
 				Item value = this.currentNode.getItem();
 				this.currentNode = this.currentNode.getNext();
 				return value;
@@ -100,7 +100,7 @@ public class Deque<Item> implements Iterable<Item> {
 	 * @return boolean
 	 */
 	public boolean isEmpty() {
-		return this.currentSize==0;
+		return this.currentSize == 0;
 	} 
 	
 	/**
@@ -116,12 +116,12 @@ public class Deque<Item> implements Iterable<Item> {
 	 * @param item
 	 */
 	public void addFirst(Item item) {
-		if(item==null) {
+		if (item == null) {
 			throw new IllegalArgumentException("Can not add null.");
 		}
 		Node<Item> newFirst = new Node<Item>(item);
 		
-		if(this.head==null) {
+		if (this.head == null) {
 			this.head = newFirst;
 			this.tail = newFirst;
 			++this.currentSize;
@@ -139,11 +139,11 @@ public class Deque<Item> implements Iterable<Item> {
 	 * @param item
 	 */
 	public void addLast(Item item) {
-		if(item==null) {
+		if (item == null) {
 			throw new IllegalArgumentException("Can not add null.");
 		}
 		
-		if(this.tail==null) {
+		if (this.tail == null) {
 			this.addFirst(item);
 			return;
 		}
@@ -163,12 +163,12 @@ public class Deque<Item> implements Iterable<Item> {
 		
 		
 		// empty list
-		if(this.head==null) {
+		if (this.head == null) {
 //			return null;
 			throw new NoSuchElementException("Deque is empty, can not remove element.");
 		}
 		// 1 item
-		if(this.head.equals(this.tail)) {
+		if (this.head.equals(this.tail)) {
 			Node<Item> removedNode = this.head;
 			this.head = null;
 			this.tail = null;
@@ -192,12 +192,12 @@ public class Deque<Item> implements Iterable<Item> {
 	 */
 	public Item removeLast() {
 		// empty list
-		if(this.tail==null) {
+		if (this.tail == null) {
 //			return null;
 			throw new NoSuchElementException("Deque is empty, can not remove element.");
 		}
 		// 1 Node 
-		if(this.tail.equals(this.head)) {
+		if (this.tail.equals(this.head)) {
 			Node<Item> removedNode = this.tail;
 			this.head = null;
 			this.tail = null;
@@ -219,7 +219,7 @@ public class Deque<Item> implements Iterable<Item> {
 	/**
 	 * Return an iterator over items in order from front to end.
 	 */
-	public Iterator<Item> iterator(){
+	public Iterator<Item> iterator() {
 		return new DequeIterator();
 	}
 
