@@ -3,6 +3,8 @@ package eu.rtakacs.algorithms.list;
 import java.util.Iterator;
 
 /**
+ * Linked List
+ * https://www.youtube.com/watch?v=-EDUhPg6930&list=PLpPXw4zFa0uKKhaSz87IowJnOTzh9tiBk&index=11
  * Boundary conditions:
  * <ul>
  * <li>Empty data structure</li>
