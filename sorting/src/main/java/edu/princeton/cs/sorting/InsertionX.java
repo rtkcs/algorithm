@@ -1,5 +1,8 @@
 package edu.princeton.cs.sorting;
 
+import edu.princeton.cs.algs4.StdIn;
+import edu.princeton.cs.algs4.StdOut;
+
 /******************************************************************************
  *  Compilation:  javac InsertionX.java
  *  Execution:    java InsertionX < input.txt

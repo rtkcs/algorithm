@@ -35,14 +35,5 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/work/m2/edu/princeton/cs/algs4/1.0.0.0/algs4-1.0.0.0.jar">
-		<attributes>
-			<attribute name="maven.pomderived" value="true"/>
-			<attribute name="maven.groupId" value="edu.princeton.cs"/>
-			<attribute name="maven.artifactId" value="algs4"/>
-			<attribute name="maven.version" value="1.0.0.0"/>
-			<attribute name="maven.scope" value="compile"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
