@@ -88,13 +88,13 @@ public class BinaryHeap<E> {
 		int leftChild = 2 * parent + 1;
 		int rightChild = 2 * parent + 2;
 		
-		if(leftChild == this.lastPosition && 
+		if(leftChild == (this.lastPosition-2) && 
 			((Comparable<E>)array[parent]).compareTo(array[leftChild]) < 0) {
 			swap(parent, leftChild);
 			return;
 		}
 		
-		if(rightChild == this.lastPosition && 
+		if(rightChild == (this.lastPosition-1) && 
 				((Comparable<E>)array[parent]).compareTo(array[rightChild]) < 0) {
 			swap(parent, rightChild);
 			return;
@@ -108,7 +108,8 @@ public class BinaryHeap<E> {
 			((Comparable<E>)array[parent]).compareTo(array[leftChild]) < 0) {
 			swap(parent, leftChild);
 			trickleDown(leftChild);
-		} else if(((Comparable<E>)array[leftChild]).compareTo(array[rightChild]) < 0 && 
+		} else 
+		if(((Comparable<E>)array[leftChild]).compareTo(array[rightChild]) < 0 && 
 				((Comparable<E>)array[parent]).compareTo(array[rightChild]) < 0) {
 			swap(parent, rightChild);
 			trickleDown(rightChild);
