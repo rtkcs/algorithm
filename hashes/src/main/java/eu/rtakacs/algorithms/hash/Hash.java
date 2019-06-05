@@ -85,7 +85,7 @@ public class Hash<K,V> implements IHash<K,V>, Iterable<K> {
 	public V getValue(K key) {
 		int hashValue = this.getHashValue(key);
 		for(HashElement<K,V> he : hashArray[hashValue]) {
-			if(0 == ((Comparable)he.key).compareTo(key)) {
+			if(0 == ((Comparable<K>)he.key).compareTo(key)) {
 				return he.value;
 			}
 		}

@@ -55,7 +55,7 @@ public class BinaryHeap<E> {
 	private void trickleUp(int child) {
 		int parent = getParent(this.lastPosition);
 		
-		while(((Comparable)array[parent]).compareTo(array[child]) < 0 ) {
+		while(((Comparable<E>)array[parent]).compareTo(array[child]) < 0 ) {
 			swap(child, parent);
 			child = parent;
 			parent = getParent(child);

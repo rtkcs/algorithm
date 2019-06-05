@@ -5,4 +5,11 @@
   <version>0.0.1-SNAPSHOT</version>
   <name>hashes</name>
   <description>hashes</description>
+  
+  	<properties>
+  		<maven.compiler.source>1.8</maven.compiler.source>
+  		<maven.compiler.target>1.8</maven.compiler.target>
+  		<project.build.sourceEncoding>CP1252</project.build.sourceEncoding>
+  	</properties>
+  
 </project>

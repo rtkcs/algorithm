@@ -106,7 +106,7 @@ public class LinkedList<V> implements Iterable<V> {
 		
 	}
 	
-	public Node removeFirst() {
+	public Node<V> removeFirst() {
 		// empty list
 		if(this.head==null) {
 			return null;
@@ -130,7 +130,7 @@ public class LinkedList<V> implements Iterable<V> {
 		return removedNode;
 	}
 	
-	public Node removeLast() {
+	public Node<V> removeLast() {
 		// empty list
 		if(this.tail==null) {
 			return null;
