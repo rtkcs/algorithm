@@ -124,6 +124,7 @@ public class Tree<E> {
 				returnValue = removeNodeWithChildren(returnNode);
 			}
 		}
+		this.currentSize--;
 		return returnValue;
 	}
 	
