@@ -37,6 +37,12 @@ public class Tree<E> {
 			}else {
 				sb.append("null");
 			}
+			sb.append(", parent=");
+			if(this.parent!=null) {
+				sb.append(this.parent.data);
+			}else {
+				sb.append("null");
+			}
 			sb.append("]");
 			return sb.toString();
 		}
