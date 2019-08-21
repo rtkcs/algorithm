@@ -9,7 +9,7 @@ import edu.princeton.cs.algs4.StdOut;
 
 public class FastCollinearPoints {
 
-	private final List<LineSegment> llLineSegment = new LinkedList<>();
+	private final List<LineSegmentaEquals> llLineSegment = new LinkedList<>();
 	
 	/**
 	 * Finds all line segments containing 4 or more points.
@@ -79,7 +79,7 @@ public class FastCollinearPoints {
 						segmentPCPointer++;
 					}
 					Arrays.sort(segmentPC);
-					LineSegment ls = new LineSegment(segmentPC[0], segmentPC[segmentLength-1]);
+					LineSegmentaEquals ls = new LineSegmentaEquals(segmentPC[0], segmentPC[segmentLength-1]);
 					this.llLineSegment.add(ls);
 					
 				}
@@ -96,14 +96,7 @@ public class FastCollinearPoints {
 		
 	}
 	
-//	private class SlopeComparator implements Comparator<Point> {
-//		
-//		@Override
-//		public int compare(Point p1, Point p2) {
-//			double slope = p1.slopeTo(p2);
-//		}
-//	} 
-	
+
 	private class PointContainer {
 		private final Point point;
 		private final double slope;
@@ -148,6 +141,29 @@ public class FastCollinearPoints {
 		}
 	}
 	
+	private class LineSegmentaEquals {
+		private final Point p;   // one endpoint of this line segment
+	    private final Point q;   // the other endpoint of this line segment
+	    
+	    LineSegmentaEquals(Point p, Point q){
+	    	this.p = p;
+	    	this.q = q;
+	    }
+	    
+	    @Override
+	    public boolean equals(Object obj) {
+	    	if(obj instanceof LineSegmentaEquals) {
+	    		LineSegmentaEquals that = (LineSegmentaEquals)obj;
+	    		return this.p.compareTo(that.p)==0 && this.q.compareTo(that.q)==0;
+	    	}
+	    	return false;
+	    }
+	    
+	    LineSegment getLineSegment() {
+	    	return new LineSegment(this.p, this.q);
+	    }
+	}
+	
 	private class PointContainerSlopeComparator implements Comparator<PointContainer> {
 
 		@Override
@@ -171,11 +187,13 @@ public class FastCollinearPoints {
 	 */
 	public LineSegment[] segments() {
 		
-		LineSegment[] ls = new LineSegment[this.llLineSegment.size()];
+		LineSegment[] lsArray = new LineSegment[this.llLineSegment.size()];
+
 		for (int i = 0; i < this.llLineSegment.size(); i++) {
-			ls[i] = this.llLineSegment.get(i);
+			LineSegmentaEquals ls = this.llLineSegment.get(i);
+			lsArray[i] = this.llLineSegment.get(i).getLineSegment();
 		}
-		return ls;
+		return lsArray;
 	} 
 	
 	public static void main(String[] args) {
