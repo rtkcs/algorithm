@@ -18,14 +18,14 @@ public class BruteCollinearPoints {
 		
 		double[] slopes = new double[points.length];
 		LinkedList<Point> collinearPoints = new LinkedList<>();
-		for(int i = 0; i < points.length;i++) {
+		for (int i = 0; i < points.length; i++) {
 			
 			Point point = points[i];
 			if (point == null) {
 				throw new IllegalArgumentException("One of the points is null.");
 			}
 			
-			for(int j = i; j > -1; j--) {
+			for (int j = i; j > -1; j--) {
 				Point pointCompare = points[j];
 				if (point.equals(pointCompare)) {
 					throw new IllegalArgumentException("Two points are equal.");
@@ -43,7 +43,7 @@ public class BruteCollinearPoints {
 					continue;
 				}
 				
-				if(slope == slopes[x]) {
+				if (slope == slopes[x]) {
 					collinearPoints.add(points[x]);
 				}
 			}
@@ -70,7 +70,7 @@ public class BruteCollinearPoints {
 	 */
 	public LineSegment[] segments() {
 		
-		return null;
+		return new LineSegment[1];
 	}
 	
 	public static void main(String[] args) {
