@@ -34,10 +34,6 @@ public class FastCollinearPoints {
 			
 			for (int j = 0; j < points.length; j++) {
 				
-//				if(i == j) {
-//					continue;
-//				}
-				
 				Point pointCompare = points[j];
 				if (point.equals(pointCompare) && i != j) {
 					throw new IllegalArgumentException("Two points are equal.");
@@ -83,7 +79,7 @@ public class FastCollinearPoints {
 					this.llLineSegment.add(ls);
 					
 				}
-				if(x < points.length) {
+				if (x < points.length) {
 					initSlope = pcArray[x].getSlope();
 				}
 				startIndex = x;
@@ -141,11 +137,11 @@ public class FastCollinearPoints {
 		}
 	}
 	
-	private class LineSegmentaEquals {
+	private class LineSegmentaEquals implements Comparator<LineSegmentaEquals> {
 		private final Point p;   // one endpoint of this line segment
 	    private final Point q;   // the other endpoint of this line segment
 	    
-	    LineSegmentaEquals(Point p, Point q){
+	    LineSegmentaEquals(Point p, Point q) {
 	    	this.p = p;
 	    	this.q = q;
 	    }
@@ -153,15 +149,26 @@ public class FastCollinearPoints {
 	    @Override
 	    public boolean equals(Object obj) {
 	    	if(obj instanceof LineSegmentaEquals) {
-	    		LineSegmentaEquals that = (LineSegmentaEquals)obj;
-	    		return this.p.compareTo(that.p)==0 && this.q.compareTo(that.q)==0;
+	    		LineSegmentaEquals that = (LineSegmentaEquals) obj;
+	    		return this.p.compareTo(that.p) == 0 && this.q.compareTo(that.q) == 0;
 	    	}
 	    	return false;
+	    }
+	    
+	    @Override
+	    public int hashCode() {
+	    	return (int)this.p.slopeTo(this.q);
 	    }
 	    
 	    LineSegment getLineSegment() {
 	    	return new LineSegment(this.p, this.q);
 	    }
+
+		@Override
+		public int compare(LineSegmentaEquals o1, LineSegmentaEquals o2) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
 	}
 	
 	private class PointContainerSlopeComparator implements Comparator<PointContainer> {
@@ -187,13 +194,23 @@ public class FastCollinearPoints {
 	 */
 	public LineSegment[] segments() {
 		
-		LineSegment[] lsArray = new LineSegment[this.llLineSegment.size()];
-
-		for (int i = 0; i < this.llLineSegment.size(); i++) {
-			LineSegmentaEquals ls = this.llLineSegment.get(i);
-			lsArray[i] = this.llLineSegment.get(i).getLineSegment();
-		}
-		return lsArray;
+//		LineSegment[] lsArray = new LineSegment[this.llLineSegment.size()];
+		
+//		List<LineSegment> lls = new ArrayList<LineSegment>();
+//		
+//		LineSegmentaEquals ls = this.llLineSegment.get(0);
+//		int llLineSegmentPointer;
+//		for (int i = 0; i < this.llLineSegment.size(); i++) {
+//			lls.add(this.llLineSegment.get(i).getLineSegment());
+//			while(ls.equals(this.llLineSegment.get(++i))) {
+//				
+//			}
+//		}
+//		return lsArray;
+		
+		Object[] objArray = this.llLineSegment.stream().distinct().map(lse -> lse.getLineSegment()).toArray();
+		return Arrays.copyOf(objArray, objArray.length, LineSegment[].class);
+		
 	} 
 	
 	public static void main(String[] args) {

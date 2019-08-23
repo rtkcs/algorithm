@@ -9,7 +9,7 @@ import edu.princeton.cs.algs4.StdOut;
 
 public class BruteCollinearPoints {
 	
-	private final List<LineSegment> llLineSegment = new LinkedList<>();
+	private final List<LineSegmentaEquals> llLineSegment = new LinkedList<>();
 	
 	/**
 	 * Finds all line segments containing 4 points.
@@ -77,7 +77,7 @@ public class BruteCollinearPoints {
 						segmentPCPointer++;
 					}
 					Arrays.sort(segmentPC);
-					LineSegment ls = new LineSegment(segmentPC[0], segmentPC[segmentLength-1]);
+					LineSegmentaEquals ls = new LineSegmentaEquals(segmentPC[0], segmentPC[segmentLength-1]);
 					this.llLineSegment.add(ls);
 					
 				}
@@ -137,6 +137,42 @@ public class BruteCollinearPoints {
 		}
 	}
 	
+	
+	private class LineSegmentaEquals implements Comparator<LineSegmentaEquals> {
+		private final Point p;   // one endpoint of this line segment
+	    private final Point q;   // the other endpoint of this line segment
+	    
+	    LineSegmentaEquals(Point p, Point q){
+	    	this.p = p;
+	    	this.q = q;
+	    }
+	    
+	    @Override
+	    public boolean equals(Object obj) {
+	    	if(obj instanceof LineSegmentaEquals) {
+	    		LineSegmentaEquals that = (LineSegmentaEquals)obj;
+	    		return this.p.compareTo(that.p)==0 && this.q.compareTo(that.q)==0;
+	    	}
+	    	return false;
+	    }
+	    
+	    @Override
+	    public int hashCode() {
+	    	return (int)this.p.slopeTo(this.q);
+	    }
+	    
+	    LineSegment getLineSegment() {
+	    	return new LineSegment(this.p, this.q);
+	    }
+
+		@Override
+		public int compare(LineSegmentaEquals o1, LineSegmentaEquals o2) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+	}
+	
+	
 	private class PointContainerSlopeComparator implements Comparator<PointContainer> {
 
 		@Override
@@ -161,11 +197,13 @@ public class BruteCollinearPoints {
 	 */
 	public LineSegment[] segments() {
 		
-		LineSegment[] ls = new LineSegment[this.llLineSegment.size()];
-		for (int i = 0; i < this.llLineSegment.size(); i++) {
-			ls[i] = this.llLineSegment.get(i);
-		}
-		return ls;
+//		LineSegment[] ls = new LineSegment[this.llLineSegment.size()];
+//		for (int i = 0; i < this.llLineSegment.size(); i++) {
+//			ls[i] = this.llLineSegment.get(i);
+//		}
+//		return ls;
+		Object[] objArray = this.llLineSegment.stream().distinct().map(lse -> lse.getLineSegment()).toArray();
+		return Arrays.copyOf(objArray, objArray.length, LineSegment[].class);
 	}
 	
 	public static void main(String[] args) {
