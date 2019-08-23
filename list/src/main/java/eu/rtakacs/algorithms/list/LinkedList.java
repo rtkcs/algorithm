@@ -23,7 +23,7 @@ public class LinkedList<V> implements Iterable<V> {
 	private Node<V> tail;
 	private int currentSize;
 	
-	class Node<V>/* implements Comparable<Node<V>> */ {
+	class Node<gi>/* implements Comparable<Node<V>> */ {
 
 		private V v;
 		private Node<V> next;
