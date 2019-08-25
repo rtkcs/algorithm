@@ -2,12 +2,35 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
+
+
 
 public class Board {
 	
-	private int[][] goalBoard;
-	private int[][] currentBoard;
+	private final int[][] goalTiles;
+	private int[][] currentTiles;
+	private final int dimension;
+	private int row0;
+	private int column0;
+	private int hamming = -1;
+	private int manhattan = -1;
+	
+	private class Pair<T, U> {
+		
+		private final T t;
+		private final U u;
+		Pair(T t, U u) {
+			this.t = t;
+			this.u = u;
+		}
+		public T getLeft() {
+			return t;
+		}
+
+		public U getRight() {
+			return u;
+		}
+	}
 	
     /**
      * Creates a board from an n-by-n array of tiles, where tiles[row][col] = tile at (row, col)
@@ -15,19 +38,34 @@ public class Board {
      */
     public Board(int[][] tiles) {
     	
-    	this.currentBoard = tiles;
+    	this.currentTiles = tiles;
+    	this.dimension = tiles.length;
+    	
     	//
     	// --- init goalBoard
     	//
-    	goalBoard = new int[tiles.length][tiles.length];
+    	goalTiles = new int[this.dimension][this.dimension];
     	int key = 1;
-    	for(int i=0; i < tiles.length; i++) {
-    		for(int j=0; j < tiles.length; j++) {
+    	for (int i = 0; i < this.dimension; i++) {
+    		for (int j = 0; j < this.dimension; j++) {
     			
-    			goalBoard[i][j] = key++;  
+    			goalTiles[i][j] = key++;  
     		}
     	}
-    	goalBoard[tiles.length-1][tiles.length-1] = 0;
+    	goalTiles[this.dimension-1][this.dimension-1] = 0;
+    	
+    	
+    	//
+    	// --- search for 0 - empty cell
+    	//
+    	for (int i = 0; i < this.dimension; i++) {
+    		for (int j = 0; j < this.dimension; j++) {
+    			if (this.currentTiles[i][j] == 0) {
+    				this.row0 = i;
+    				this.column0 = j;
+    			}
+    		}
+    	}    	
     }
                                            
     /**
@@ -37,12 +75,12 @@ public class Board {
     @Override
     public String toString() {
     	StringBuilder sb = new StringBuilder();
-    	sb.append(this.currentBoard.length);
+    	sb.append(this.currentTiles.length);
     	sb.append(System.lineSeparator());
     	
-    	for(int i=0; i < this.currentBoard.length; i++) {
-    		for(int j=0; j<this.currentBoard.length; j++) {
-    			sb.append(this.currentBoard[i][j]);
+    	for (int i = 0; i < this.dimension; i++) {
+    		for (int j = 0; j < this.dimension; j++) {
+    			sb.append(this.currentTiles[i][j]);
     			sb.append(" ");
     		}
     		sb.append(System.lineSeparator());
@@ -57,7 +95,7 @@ public class Board {
      * @return int
      */
     public int dimension() {
-    	return this.currentBoard.length;
+    	return this.dimension;
     }
 
     /**
@@ -65,18 +103,22 @@ public class Board {
      * @return int
      */
     public int hamming() {
-    	int hamming = 0;
-    	for(int i = 0; i < this.currentBoard.length; i++) {
-    		for(int j = 0; j < this.currentBoard.length; j++ ) {
-    			if(this.goalBoard[i][j]==0) {
-    				continue;
-    			}
-    			if(this.goalBoard[i][j] != this.currentBoard[i][j]) {
-    				hamming++;
-    			}
-    		}
+    	
+    	if (this.hamming == -1) {
+    		int hammingTemp = 0;
+	    	for (int i = 0; i < this.dimension; i++) {
+	    		for (int j = 0; j < this.dimension; j++) {
+	    			if (this.goalTiles[i][j] == 0) {
+	    				continue;
+	    			}
+	    			if (this.goalTiles[i][j] != this.currentTiles[i][j]) {
+	    				hammingTemp++;
+	    			}
+	    		}
+	    	}
+	    	this.hamming = hammingTemp;
     	}
-    	return hamming;
+    	return this.hamming;
     }
 
     /**
@@ -84,28 +126,36 @@ public class Board {
      * @return
      */
     public int manhattan() {
-    	int manhattan = 0;
-    	int numberOfMoves = 0;
-    	
-    	for(int i=0; i<this.currentBoard.length; i++) {
-    		for(int j=0; j<this.currentBoard.length; j++) {
-    				
-    			if(this.currentBoard[i][j] == 0) {
-    				continue;
-    			}
-    			
-    			if(this.currentBoard[i][j] != this.goalBoard[i][j]) {
-    				
-    				int currentItem = this.currentBoard[i][j];
-    				int row = currentItem / this.currentBoard.length;
-    				int coll = (currentItem % this.currentBoard.length) - 1;
-    				
-    				numberOfMoves = Math.abs((i - row)) + Math.abs((j - coll));
-    				manhattan += numberOfMoves; 
-    			}
-    		}
+    	if (this.manhattan == -1) {
+	    	int numberOfMoves = 0;
+	    	int manhattanTemp = 0;
+	    	
+	    	for (int i = 0; i < this.dimension; i++) {		// roww
+	    		for (int j = 0; j < this.dimension; j++) {	// column
+	    				
+	    			if (this.currentTiles[i][j] == 0) {
+	    				continue;
+	    			}
+	    			
+	    			if (this.currentTiles[i][j] != this.goalTiles[i][j]) {
+	    				
+	    				int currentItem = this.currentTiles[i][j];
+	    				int row = (currentItem - 1) / this.dimension;
+	    				int coll = (currentItem % this.dimension);
+	    				if (coll == 0) {
+	    					coll = this.dimension -1;
+	    				} else {
+	    					coll--;
+	    				}
+	    				
+	    				numberOfMoves = Math.abs((i - row)) + Math.abs((j - coll));
+	    				manhattanTemp += numberOfMoves; 
+	    			}
+	    		}
+	    	}
+	    	this.manhattan = manhattanTemp;
     	}
-    	return manhattan;
+    	return this.manhattan;
     }
 
     /**
@@ -113,65 +163,91 @@ public class Board {
      * @return If this board is the goal board.
      */
     public boolean isGoal() {
-    	return Arrays.deepEquals(this.currentBoard, this.goalBoard);
+    	return Arrays.deepEquals(this.currentTiles, this.goalTiles);
     }
 
     
     @Override
     public boolean equals(Object obj) {
-    	if(obj instanceof int[][]) {
-    		int[][] that = (int[][])obj;
-    		return Arrays.deepEquals(this.currentBoard, that);
+    	if (obj instanceof Board) {
+    		Board that = (Board) obj;
+    		if (this.dimension() != that.dimension()) {
+    			return false;
+    		}
+    		return Arrays.deepEquals(this.currentTiles, that.currentTiles);
     	}
     	return false;
     }
+    
 
     /**
-     * all neighboring boards
-     * @return
+     * Returns all neighboring boards from the current board.
+     * @return Iterable < Board >
      */
-    public Iterable<Board> neighbors(){
-    	//search for 0 - empty cell
-    	int row0;
-    	int cell0;
-    	for(int i=0; i<this.currentBoard.length; i++) {
-    		for(int j=0; j<this.currentBoard.length; j++) {
-    			if(this.currentBoard[i][j] == 0) {
-    				row0 = i;
-    				cell0 = j;
-    			}
-    		}
-    	}
-    	// create new boards
+    public Iterable<Board> neighbors() {
+
+    	// create new board from copy of the current board
     	List<Board> newBoards = new ArrayList<>();
-    	int[][] newTiles = new int[this.currentBoard.length][this.currentBoard.length];
-    	for(int i = 0; i < this.currentBoard.length; i++) {
-    		int[] newRow = Arrays.copyOf(this.currentBoard[i], this.currentBoard.length);
+    	
+    	
+    	int[][] newTiles = null;
+    	//row0, column0
+    	if ((row0 - 1) > -1) {
+    		newTiles = this.getCopyOfCurrentTiles();
+    		this.swap(newTiles, new Pair<Integer, Integer>(row0, column0), new Pair<Integer, Integer>(row0 - 1, column0));
+    		newBoards.add(new Board(newTiles));
+    	}
+    	if ((row0 + 1) < this.dimension) {
+    		newTiles = this.getCopyOfCurrentTiles();
+    		this.swap(newTiles, new Pair<Integer, Integer>(row0, column0), new Pair<Integer, Integer>(row0 + 1, column0));
+    		newBoards.add(new Board(newTiles));
+    	}
+    	if (column0 - 1 > -1) {
+    		newTiles = this.getCopyOfCurrentTiles();
+    		this.swap(newTiles, new Pair<Integer, Integer>(row0, column0), new Pair<Integer, Integer>(row0, column0 - 1));
+    		newBoards.add(new Board(newTiles));
+    	}
+    	if (column0 + 1 < this.dimension) {
+    		newTiles = this.getCopyOfCurrentTiles();
+    		this.swap(newTiles, new Pair<Integer, Integer>(row0, column0), new Pair<Integer, Integer>(row0, column0 + 1));
+    		newBoards.add(new Board(newTiles));
+    	}
+    	return newBoards;
+    }
+    
+    private int[][] getCopyOfCurrentTiles() {
+    	int[][] newTiles = new int[this.dimension][this.dimension];
+    	for (int i = 0; i < this.currentTiles.length; i++) {
+    		int[] newRow = Arrays.copyOf(this.currentTiles[i], this.dimension);
     		newTiles[i] = newRow;
     	}
-    	newBoards.add(new Board(newTiles));
-    	
-    	return newBoards;
+    	return newTiles;
     }
     
     /**
      * 
      * @param inta Array of int[][]
-     * @param from ImmutablePair < Integer, Integer >
-     * @param to ImmutablePair < Integer, Integer >
+     * @param from ImmutablePair < Integer, Integer > row, column
+     * @param to ImmutablePair < Integer, Integer > row, column
      */
-    private void swap(int[][] inta, ImmutablePair<Integer,Integer> from, ImmutablePair<Integer, Integer> to) {
+    private void swap(int[][] inta, Pair<Integer, Integer> from, Pair<Integer, Integer> to) {
     	int temp = inta[to.getLeft()][to.getRight()];
     	inta[to.getLeft()][to.getRight()] = inta[from.getLeft()][from.getRight()];
     	inta[from.getLeft()][from.getRight()] = temp;
     }
 
     /**
-     * a board that is obtained by exchanging any pair of tiles
-     * @return
+     * A board that is obtained by exchanging any pair of tiles.
+     * @return Board
      */
     public Board twin() {
-    	return null;
+    	int[][] newTiles = this.getCopyOfCurrentTiles();
+    	if (newTiles[0][0] != 0 && newTiles[1][0] != 0 ) {
+    		this.swap(newTiles, new Pair<Integer, Integer>(0, 0), new Pair<Integer, Integer>(1, 0));
+    	} else {
+    		this.swap(newTiles, new Pair<Integer, Integer>(0, 1), new Pair<Integer, Integer>(1, 1));
+    	}
+    	return new Board(newTiles);
     }
 
     /**
@@ -179,23 +255,42 @@ public class Board {
      * @param args
      */
     public static void main(String[] args) {
-    	int[][] tiles = new int[][] {
-    		{1,0,3},
-    		{4,2,5},
-    		{7,8,9}
+    	int[][] tiles = {
+    		{1, 0, 3},
+    		{4, 2, 5},
+    		{7, 8, 6}
     	};
     	Board board = new Board(tiles);
     	board.printout(board);
     	
-    	int[][] tiles2 = new int[][] {
-    		{8,1,3},
-    		{4,0,2},
-    		{7,6,5}
+    	System.out.println("Twin");
+    	board.printout(board.twin());
+    	
+    	System.out.println("Neighbors");
+    	for (Board b : board.neighbors()) {
+    		b.printout(b);
+    	}
+    	
+    	System.out.println("-------new board-------");
+    	System.out.println("");
+    	int[][] tiles2 = {
+    		{8, 1, 3},
+    		{4, 0, 2},
+    		{7, 6, 5}
     	};
     	Board board2 = new Board(tiles2);
     	board2.printout(board2);
+    	
+    	int[][] tiles3 = {
+    		{0, 1, 3},
+    		{4, 2, 5},
+    		{7, 8, 6}
+    	};
+    	Board board3 = new Board(tiles3);
+    	board3.printout(board3);
     }
-     private void printout(Board board) {
+    private void printout(Board board) {
+    	System.out.println("--- Board ---");
      	System.out.println(board.dimension());
      	System.out.println(board.toString());
      	System.out.println("Hamming = " + board.hamming());
