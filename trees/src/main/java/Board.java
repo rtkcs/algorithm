@@ -7,13 +7,14 @@ import java.util.List;
 
 public class Board {
 	
-	private final int[][] goalTiles;
+	private static int[][] goalTiles;
 	private int[][] currentTiles;
 	private final int dimension;
 	private int row0;
 	private int column0;
 	private int hamming = -1;
 	private int manhattan = -1;
+	private List<Board> newBoards = new ArrayList<>();
 	
 	private class Pair<T, U> {
 		
@@ -164,6 +165,20 @@ public class Board {
      */
     public boolean isGoal() {
     	return Arrays.deepEquals(this.currentTiles, this.goalTiles);
+//		int key = 1;
+//		if(this.currentTiles[this.dimension-1][this.dimension-1] != 0) {
+//			return false;
+//		}
+//		for(int i = 0; i < this.dimension; i++) {
+//			for(int j = 0; j < this.dimension; j++) {
+//				
+//				if((this.dimension-1 != i) && this.dimension-1 != j && this.currentTiles[i][j] != key) {
+//					return false;
+//				}
+//				key++;
+//			}
+//		}
+//		return true;
     }
 
     
@@ -187,30 +202,30 @@ public class Board {
     public Iterable<Board> neighbors() {
 
     	// create new board from copy of the current board
-    	List<Board> newBoards = new ArrayList<>();
+    	if (newBoards.size() == 0) {
     	
-    	
-    	int[][] newTiles = null;
-    	//row0, column0
-    	if ((row0 - 1) > -1) {
-    		newTiles = this.getCopyOfCurrentTiles();
-    		this.swap(newTiles, new Pair<Integer, Integer>(row0, column0), new Pair<Integer, Integer>(row0 - 1, column0));
-    		newBoards.add(new Board(newTiles));
-    	}
-    	if ((row0 + 1) < this.dimension) {
-    		newTiles = this.getCopyOfCurrentTiles();
-    		this.swap(newTiles, new Pair<Integer, Integer>(row0, column0), new Pair<Integer, Integer>(row0 + 1, column0));
-    		newBoards.add(new Board(newTiles));
-    	}
-    	if (column0 - 1 > -1) {
-    		newTiles = this.getCopyOfCurrentTiles();
-    		this.swap(newTiles, new Pair<Integer, Integer>(row0, column0), new Pair<Integer, Integer>(row0, column0 - 1));
-    		newBoards.add(new Board(newTiles));
-    	}
-    	if (column0 + 1 < this.dimension) {
-    		newTiles = this.getCopyOfCurrentTiles();
-    		this.swap(newTiles, new Pair<Integer, Integer>(row0, column0), new Pair<Integer, Integer>(row0, column0 + 1));
-    		newBoards.add(new Board(newTiles));
+	    	int[][] newTiles = null;
+	    	// row0, column0
+	    	if ((row0 - 1) > -1) {
+	    		newTiles = this.getCopyOfCurrentTiles();
+	    		this.swap(newTiles, new Pair<Integer, Integer>(row0, column0), new Pair<Integer, Integer>(row0 - 1, column0));
+	    		newBoards.add(new Board(newTiles));
+	    	}
+	    	if ((row0 + 1) < this.dimension) {
+	    		newTiles = this.getCopyOfCurrentTiles();
+	    		this.swap(newTiles, new Pair<Integer, Integer>(row0, column0), new Pair<Integer, Integer>(row0 + 1, column0));
+	    		newBoards.add(new Board(newTiles));
+	    	}
+	    	if (column0 - 1 > -1) {
+	    		newTiles = this.getCopyOfCurrentTiles();
+	    		this.swap(newTiles, new Pair<Integer, Integer>(row0, column0), new Pair<Integer, Integer>(row0, column0 - 1));
+	    		newBoards.add(new Board(newTiles));
+	    	}
+	    	if (column0 + 1 < this.dimension) {
+	    		newTiles = this.getCopyOfCurrentTiles();
+	    		this.swap(newTiles, new Pair<Integer, Integer>(row0, column0), new Pair<Integer, Integer>(row0, column0 + 1));
+	    		newBoards.add(new Board(newTiles));
+	    	}
     	}
     	return newBoards;
     }
@@ -242,7 +257,7 @@ public class Board {
      */
     public Board twin() {
     	int[][] newTiles = this.getCopyOfCurrentTiles();
-    	if (newTiles[0][0] != 0 && newTiles[1][0] != 0 ) {
+    	if (newTiles[0][0] != 0 && newTiles[1][0] != 0) {
     		this.swap(newTiles, new Pair<Integer, Integer>(0, 0), new Pair<Integer, Integer>(1, 0));
     	} else {
     		this.swap(newTiles, new Pair<Integer, Integer>(0, 1), new Pair<Integer, Integer>(1, 1));
