@@ -7,7 +7,7 @@ import java.util.List;
 
 public class Board {
 	
-	private static int[][] goalTiles;
+//	private static int[][] goalTiles;
 	private int[][] currentTiles;
 	private final int dimension;
 	private int row0;
@@ -45,28 +45,94 @@ public class Board {
     	//
     	// --- init goalBoard
     	//
-    	goalTiles = new int[this.dimension][this.dimension];
+//    	goalTiles = new int[this.dimension][this.dimension];
+    	int hammingTemp = 0;
+    	int numberOfMoves = 0;
+    	int manhattanTemp = 0;
     	int key = 1;
     	for (int i = 0; i < this.dimension; i++) {
     		for (int j = 0; j < this.dimension; j++) {
     			
-    			goalTiles[i][j] = key++;  
-    		}
-    	}
-    	goalTiles[this.dimension-1][this.dimension-1] = 0;
-    	
-    	
-    	//
-    	// --- search for 0 - empty cell
-    	//
-    	for (int i = 0; i < this.dimension; i++) {
-    		for (int j = 0; j < this.dimension; j++) {
+//    			goalTiles[i][j] = key++;  
+    			
+    	    	//
+    	    	// --- search for 0 - empty cell
+    	    	//
     			if (this.currentTiles[i][j] == 0) {
     				this.row0 = i;
     				this.column0 = j;
     			}
+    			
+    			if ((i==this.dimension-1) && (j==this.dimension-1)) {
+    				continue;
+    			}
+    			
+    			if (this.currentTiles[i][j]!=key++) {
+        	    	//
+        	    	// --- hamming
+        	    	//    		
+    				hammingTemp++;
+    				
+    		    	//
+    		    	// --- manhattan
+    		    	//
+    				int currentItem = this.currentTiles[i][j];
+    				int row = (currentItem - 1) / this.dimension;
+    				int coll = (currentItem % this.dimension);
+    				if (coll == 0) {
+    					coll = this.dimension -1;
+    				} else {
+    					coll--;
+    				}
+    				
+    				numberOfMoves = Math.abs((i - row)) + Math.abs((j - coll));
+    				manhattanTemp += numberOfMoves; 
+    			}
     		}
-    	}    	
+    	}
+    	this.hamming = hammingTemp;
+    	this.manhattan = manhattanTemp;
+//    	goalTiles[this.dimension-1][this.dimension-1] = 0;
+    	
+    	
+
+//    	for (int i = 0; i < this.dimension; i++) {
+//    		for (int j = 0; j < this.dimension; j++) {
+//    		
+//    		}
+//    	}
+    	
+
+    	
+		
+//    	for (int i = 0; i < this.dimension; i++) {
+//    		for (int j = 0; j < this.dimension; j++) {
+//    			if (this.goalTiles[i][j] == 0) {
+//    				continue;
+//    			}
+//    			
+//    		}
+//    	}
+    	
+    	
+
+
+    	
+//    	for (int i = 0; i < this.dimension; i++) {		// roww
+//    		for (int j = 0; j < this.dimension; j++) {	// column
+//    				
+//    			if (this.currentTiles[i][j] == 0) {
+//    				continue;
+//    			}
+//    			
+//    			if (this.currentTiles[i][j] != this.goalTiles[i][j]) {
+//    				
+//
+//    			}
+//    		}
+//    	}
+    	
+    	
     }
                                            
     /**
@@ -104,21 +170,6 @@ public class Board {
      * @return int
      */
     public int hamming() {
-    	
-    	if (this.hamming == -1) {
-    		int hammingTemp = 0;
-	    	for (int i = 0; i < this.dimension; i++) {
-	    		for (int j = 0; j < this.dimension; j++) {
-	    			if (this.goalTiles[i][j] == 0) {
-	    				continue;
-	    			}
-	    			if (this.goalTiles[i][j] != this.currentTiles[i][j]) {
-	    				hammingTemp++;
-	    			}
-	    		}
-	    	}
-	    	this.hamming = hammingTemp;
-    	}
     	return this.hamming;
     }
 
@@ -127,35 +178,6 @@ public class Board {
      * @return
      */
     public int manhattan() {
-    	if (this.manhattan == -1) {
-	    	int numberOfMoves = 0;
-	    	int manhattanTemp = 0;
-	    	
-	    	for (int i = 0; i < this.dimension; i++) {		// roww
-	    		for (int j = 0; j < this.dimension; j++) {	// column
-	    				
-	    			if (this.currentTiles[i][j] == 0) {
-	    				continue;
-	    			}
-	    			
-	    			if (this.currentTiles[i][j] != this.goalTiles[i][j]) {
-	    				
-	    				int currentItem = this.currentTiles[i][j];
-	    				int row = (currentItem - 1) / this.dimension;
-	    				int coll = (currentItem % this.dimension);
-	    				if (coll == 0) {
-	    					coll = this.dimension -1;
-	    				} else {
-	    					coll--;
-	    				}
-	    				
-	    				numberOfMoves = Math.abs((i - row)) + Math.abs((j - coll));
-	    				manhattanTemp += numberOfMoves; 
-	    			}
-	    		}
-	    	}
-	    	this.manhattan = manhattanTemp;
-    	}
     	return this.manhattan;
     }
 
@@ -164,21 +186,24 @@ public class Board {
      * @return If this board is the goal board.
      */
     public boolean isGoal() {
-    	return Arrays.deepEquals(this.currentTiles, this.goalTiles);
-//		int key = 1;
-//		if(this.currentTiles[this.dimension-1][this.dimension-1] != 0) {
-//			return false;
-//		}
-//		for(int i = 0; i < this.dimension; i++) {
-//			for(int j = 0; j < this.dimension; j++) {
-//				
-//				if((this.dimension-1 != i) && this.dimension-1 != j && this.currentTiles[i][j] != key) {
-//					return false;
-//				}
-//				key++;
-//			}
-//		}
-//		return true;
+//    	return Arrays.deepEquals(this.currentTiles, this.goalTiles);
+		int key = 1;
+		if(this.currentTiles[this.dimension-1][this.dimension-1] != 0) {
+			return false;
+		}
+		for(int i = 0; i < this.dimension; i++) {
+			for(int j = 0; j < this.dimension; j++) {
+				
+				if((this.dimension-1 == i) && (this.dimension-1 == j)) {
+					continue;
+				}
+				
+				if(this.currentTiles[i][j] != key++) {
+					return false;
+				}
+			}
+		}
+		return true;
     }
 
     

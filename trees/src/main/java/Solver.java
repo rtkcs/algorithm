@@ -1,13 +1,9 @@
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.Set;
 
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.MinPQ;
@@ -17,10 +13,10 @@ public class Solver {
 	
 	private boolean solvable = true;
 	private Node currenNode;
+	private Node currenNodeTwin;
 	private final List<Board> list = new LinkedList<>();
-//	private final Map<Integer,ArrayList<Node>> previousSolutions2 = new HashMap<Integer,ArrayList<Node>>();
 	private final List<Node> previousSolutions = new ArrayList<Node>();
-//	private final Set<Node> previousSolutions = new HashSet<>();
+	private final List<Node> previousSolutionsTwin = new ArrayList<Node>();
 	
 	
 	private class BoardComparator implements Comparator<Board> {
@@ -106,15 +102,17 @@ public class Solver {
     	}
     	
     	this.currenNode = new Node(initial, 0, null);
+    	this.currenNodeTwin = new Node(initial.twin(), 0, null);
     	
     	MinPQ<Node> minPq = new MinPQ<>(new NodeComparator());
-    	this.list.add(this.currenNode.getBoard());
+    	MinPQ<Node> minPqTwin = new MinPQ<>(new NodeComparator());
     	this.previousSolutions.add(this.currenNode);
+    	this.previousSolutionsTwin.add(this.currenNodeTwin);
     	
     	Node n;
+    	Node nt;
     	try {
-    		int counter = 0;
-	    	while (!this.currenNode.getBoard().isGoal()) {
+	    	while (!this.currenNode.getBoard().isGoal() && !this.currenNodeTwin.getBoard().isGoal()) {
 	    		for (Board b :this.currenNode.getBoard().neighbors()) {
 	    			n = new Node(b, this.currenNode.getNumberOfMoves()+1, this.currenNode);
 	    			
@@ -125,22 +123,36 @@ public class Solver {
 	    				this.previousSolutions.add(n);
 	    			}
 	    		}
-	    		
 	    		this.currenNode = minPq.delMin();
-	    		this.list.add(this.currenNode.getBoard());
+	    		
+	    		for (Board b :this.currenNodeTwin.getBoard().neighbors()) {
+	    			nt = new Node(b, this.currenNodeTwin.getNumberOfMoves()+1, this.currenNodeTwin);
+	    			
+//	    			System.out.println("contains " + counter++ + " listSize:"+this.list.size() + " minPQ.size = "+minPq.size());
+	    			
+	    			if (!this.previousSolutionsTwin.contains(nt)) {
+	    				minPqTwin.insert(nt);
+	    				this.previousSolutionsTwin.add(nt);
+	    			}
+	    		}
+	    		this.currenNodeTwin = minPqTwin.delMin();
 	    	}
     	} catch (NoSuchElementException e) {
     		this.solvable = false;
     	}
     	
-    	this.solvable = true;
     	list.clear();
-    	n = this.currenNode;
-    	while (n != null) {
-    		list.add(n.getBoard());
-    		n = n.parentNode;
+    	if(this.currenNode.getBoard().isGoal()) {
+	    	this.solvable = true;
+	    	n = this.currenNode;
+	    	while (n != null) {
+	    		list.add(n.getBoard());
+	    		n = n.parentNode;
+	    	}
+	    	Collections.reverse(this.list);
+    	} else {
+    		this.solvable = false;
     	}
-    	Collections.reverse(this.list);
     }
 
     /**
