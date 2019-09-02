@@ -1,42 +1,22 @@
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
-import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.MinPQ;
-import edu.princeton.cs.algs4.StdOut;
 
 public class Solver {
 	
 	private boolean solvable = true;
-	private Node currenNode;
-	private Node currenNodeTwin;
 	private final List<Board> list = new LinkedList<>();
-	private final List<Node> previousSolutions = new ArrayList<Node>();
-	private final List<Node> previousSolutionsTwin = new ArrayList<Node>();
 	
-	
-	private class BoardComparator implements Comparator<Board> {
-
-		@Override
-		public int compare(Board b1, Board b2) {
-			
-			int i1 = b1.manhattan()+list.size();
-			int i2 = b2.manhattan()+list.size();
-			return i1 - i2;
-		}
-		
-	}
 	
 	private class NodeComparator implements Comparator<Node> {
 
 		@Override
 		public int compare(Node n1, Node n2) {
-			int i1 = n1.getPriorityFunction();
-			int i2 = n2.getPriorityFunction();
+			int i1 = n1.numberOfMoves + n1.manhattan;
+			int i2 = n2.numberOfMoves + n2.manhattan;
 			
 			return i1 - i2;
 		}
@@ -47,22 +27,13 @@ public class Solver {
 		private Board board;
 		private Node parentNode;
 		private int numberOfMoves;
-		private int priorityFunction;
-		private List<Board> boardChildren = new LinkedList<>();
 		private int manhattan;
-		private int hashCode;
 		
 		public Node(Board board, int numberOfMoves, Node parentNode) {
 			this.board = board;
 			this.numberOfMoves = numberOfMoves;
 			this.manhattan = board.manhattan();
-			this.priorityFunction = this.numberOfMoves + this.manhattan;
 			this.parentNode = parentNode;
-			this.hashCode = this.manhattan;
-		}
-		
-		public int getPriorityFunction() {
-			return this.priorityFunction;
 		}
 		
 		public Board getBoard() {
@@ -73,23 +44,19 @@ public class Solver {
 			return this.numberOfMoves;
 		}
 		
-		public void addToChilden(Board childBoard) {
-			this.boardChildren.add(childBoard);
-		}
-		
-		@Override
-		public int hashCode() {
-			return this.hashCode;
-		}
-		
-		@Override
-		public boolean equals(Object obj) {
-			if (obj instanceof Node) {
-				Node that = (Node) obj;
-				return this.board.equals(that.board);
-			}
-			return false;
-		}
+//		@Override
+//		public int hashCode() {
+//			return this.manhattan;
+//		}
+//		
+//		@Override
+//		public boolean equals(Object obj) {
+//			if (obj instanceof Node) {
+//				Node that = (Node) obj;
+//				return this.board.equals(that.board);
+//			}
+//			return false;
+//		}
 	}
 	
     /**
@@ -100,51 +67,51 @@ public class Solver {
     	if (initial == null) {
     		throw new IllegalArgumentException("Initial Board is null");
     	}
+    	Node currenNode;
+    	Node currenNodeTwin;
     	
-    	this.currenNode = new Node(initial, 0, null);
-    	this.currenNodeTwin = new Node(initial.twin(), 0, null);
+    	currenNode = new Node(initial, 0, null);
+    	currenNodeTwin = new Node(initial.twin(), 0, null);
     	
     	MinPQ<Node> minPq = new MinPQ<>(new NodeComparator());
     	MinPQ<Node> minPqTwin = new MinPQ<>(new NodeComparator());
-    	this.previousSolutions.add(this.currenNode);
-    	this.previousSolutionsTwin.add(this.currenNodeTwin);
     	
     	Node n;
     	Node nt;
-    	try {
-	    	while (!this.currenNode.getBoard().isGoal() && !this.currenNodeTwin.getBoard().isGoal()) {
-	    		for (Board b :this.currenNode.getBoard().neighbors()) {
-	    			n = new Node(b, this.currenNode.getNumberOfMoves()+1, this.currenNode);
-	    			
-//	    			System.out.println("contains " + counter++ + " listSize:"+this.list.size() + " minPQ.size = "+minPq.size());
-	    			
-	    			if (!this.previousSolutions.contains(n)) {
-	    				minPq.insert(n);
-	    				this.previousSolutions.add(n);
-	    			}
-	    		}
-	    		this.currenNode = minPq.delMin();
-	    		
-	    		for (Board b :this.currenNodeTwin.getBoard().neighbors()) {
-	    			nt = new Node(b, this.currenNodeTwin.getNumberOfMoves()+1, this.currenNodeTwin);
-	    			
-//	    			System.out.println("contains " + counter++ + " listSize:"+this.list.size() + " minPQ.size = "+minPq.size());
-	    			
-	    			if (!this.previousSolutionsTwin.contains(nt)) {
-	    				minPqTwin.insert(nt);
-	    				this.previousSolutionsTwin.add(nt);
-	    			}
-	    		}
-	    		this.currenNodeTwin = minPqTwin.delMin();
-	    	}
-    	} catch (NoSuchElementException e) {
-    		this.solvable = false;
-    	}
+
+    	while (!currenNode.getBoard().isGoal() && !currenNodeTwin.getBoard().isGoal()) {
+			for (Board b : currenNode.getBoard().neighbors()) {
+				n = new Node(b, currenNode.getNumberOfMoves()+1, currenNode);
+				
+	//	    			System.out.println("contains " + counter++ + " listSize:"+this.list.size() + " minPQ.size = "+minPq.size());
+				
+				if (currenNode.parentNode == null) {
+					minPq.insert(n);
+				} else if (!currenNode.parentNode.getBoard().equals(b)) {
+					minPq.insert(n);
+				}
+			}
+			currenNode = minPq.delMin();
+			
+			for (Board b : currenNodeTwin.getBoard().neighbors()) {
+				nt = new Node(b, currenNodeTwin.getNumberOfMoves()+1, currenNodeTwin);
+				
+	//	    			System.out.println("contains " + counter++ + " listSize:"+this.list.size() + " minPQ.size = "+minPq.size());
+				
+				if (currenNodeTwin.parentNode == null) {
+					minPqTwin.insert(nt);
+				} else if (!currenNodeTwin.parentNode.getBoard().equals(b)) {
+					minPqTwin.insert(nt);
+				}
+			}
+			currenNodeTwin = minPqTwin.delMin();
+		}
+
     	
     	list.clear();
-    	if(this.currenNode.getBoard().isGoal()) {
+    	if (currenNode.getBoard().isGoal()) {
 	    	this.solvable = true;
-	    	n = this.currenNode;
+	    	n = currenNode;
 	    	while (n != null) {
 	    		list.add(n.getBoard());
 	    		n = n.parentNode;
@@ -176,7 +143,11 @@ public class Solver {
      * @return
      */
     public Iterable<Board> solution() {
-    	return this.list;
+    	if (this.solvable) {
+    		return this.list;
+    	} else {
+    		return null;
+    	}
     }
 
     /**
@@ -184,25 +155,6 @@ public class Solver {
      * @param args
      */
     public static void main(String[] args) {
-    	// create initial board from file
-        In in = new In(args[0]);
-        int n = in.readInt();
-        int[][] tiles = new int[n][n];
-        for (int i = 0; i < n; i++)
-            for (int j = 0; j < n; j++)
-                tiles[i][j] = in.readInt();
-        Board initial = new Board(tiles);
 
-        // solve the puzzle
-        Solver solver = new Solver(initial);
-
-        // print solution to standard output
-        if (!solver.isSolvable())
-            StdOut.println("No solution possible");
-        else {
-            StdOut.println("Minimum number of moves = " + solver.moves());
-            for (Board board : solver.solution())
-                StdOut.println(board);
-        }
     }
 }
