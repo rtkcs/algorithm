@@ -21,6 +21,7 @@ public class KdTree {
 			this.parent = parent;
 		}
 		
+		@Override
 		public String toString() {
 
 			StringBuilder sb = new StringBuilder();
@@ -59,12 +60,22 @@ public class KdTree {
 		public NodeY(Point2D point, Node parent) {
 			super(point, parent);
 		}
+		
+		@Override 
+		public String toString() {
+			return super.toString();
+		}
 	}
 	
 	private class NodeX extends Node {
 
 		public NodeX(Point2D point, Node parent) {
 			super(point, parent);
+		}
+		
+		@Override 
+		public String toString() {
+			return super.toString();
 		}
 	}
 	
@@ -207,6 +218,44 @@ public class KdTree {
 	 */
 	public void draw() {
 		// traverse tree and call Point2D.draw on every Node.point
+		
+	}
+	
+	interface Traverser {
+		void execute(Node node);
+	}
+	
+	class DrawTraverser implements Traverser{
+		
+		public void execute(Node node) {
+			node.point.draw();
+		}
+	}
+	
+	public void printInOrder(Traverser t) {
+		this.printInOrder(this.root, t);
+	}
+	private void printInOrder(Node node, Traverser t) {
+		if (node == null) {
+			return;
+		}
+		printInOrder(node.leftChild, t);
+		System.out.print(node.point);
+		t.execute(node);
+		printInOrder(node.rightChild, t);
+	}
+	
+	public void printPreOrder(Traverser t) {
+		this.printPreOrder(this.root, t);
+	}
+	private void printPreOrder(Node node, Traverser t) {
+		if (node == null) {
+			return;
+		}
+		System.out.print(node.point);
+		t.execute(node);
+		printPreOrder(node.leftChild, t);
+		printPreOrder(node.rightChild, t);
 	}
 
 	/**
