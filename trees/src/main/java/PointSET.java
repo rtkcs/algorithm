@@ -7,9 +7,9 @@ import edu.princeton.cs.algs4.Point2D;
 import edu.princeton.cs.algs4.RectHV;
 
 public class PointSET {
-	
+
 	private TreeSet<Point2D> set = new TreeSet<>();
-	
+
 	/**
 	 * Construct an empty set of points.
 	 * 
@@ -46,7 +46,7 @@ public class PointSET {
 		if (p == null) {
 			throw new IllegalArgumentException();
 		}
-		
+
 		set.add(p);
 	}
 
@@ -81,11 +81,11 @@ public class PointSET {
 	public Iterable<Point2D> range(RectHV rect) {
 		if (rect == null) {
 			throw new IllegalArgumentException();
-		}		
-		
+		}
+
 		TreeSet<Point2D> ts = new TreeSet<>();
-		for(Point2D p : set) {
-			if(rect.contains(p)) {
+		for (Point2D p : set) {
+			if (rect.contains(p)) {
 				ts.add(p);
 			}
 		}
@@ -102,36 +102,36 @@ public class PointSET {
 		if (p == null) {
 			throw new IllegalArgumentException();
 		}
-		
+
 		PointContainer[] pca = new PointContainer[set.size()];
-		
+
 		int i = 0;
 		for (Point2D ps : set) {
-			PointContainer pc = new PointContainer(ps,ps.distanceTo(p));
+			PointContainer pc = new PointContainer(ps, ps.distanceTo(p));
 			pca[i++] = pc;
 		}
 		Arrays.sort(pca, new PointContainerComparator());
-		
+
 		return pca[0].point;
 	}
-	
-	private class PointContainer{
-		
-		PointContainer(Point2D point, double distance){
+
+	private class PointContainer {
+
+		PointContainer(Point2D point, double distance) {
 			this.point = point;
 			this.distance = distance;
 		}
-		
+
 		public Point2D point;
 		public double distance;
 	}
-	
-	private class PointContainerComparator implements Comparator<PointContainer>{
+
+	private class PointContainerComparator implements Comparator<PointContainer> {
 
 		@Override
 		public int compare(PointContainer pc1, PointContainer pc2) {
-			
-			return (int)(pc1.distance - pc2.distance);
+
+			return (int) (pc1.distance - pc2.distance);
 		}
 	}
 
@@ -148,14 +148,14 @@ public class PointSET {
 		ps.insert(new Point2D(2, 2));
 		ps.insert(new Point2D(2, 3));
 		ps.insert(new Point2D(3, 3));
-		
+
 		System.out.println("Range:");
 		RectHV rect = new RectHV(1, 1, 2, 2);
 		Iterable<Point2D> it = ps.range(rect);
 		for (Point2D p : it) {
 			System.out.println(p.toString());
 		}
-		
+
 		Point2D p = new Point2D(1.1, 1.0);
 		p = ps.nearest(p);
 		System.out.println("Nearest:");
