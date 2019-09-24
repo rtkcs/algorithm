@@ -1,6 +1,4 @@
 
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.TreeSet;
 
 import edu.princeton.cs.algs4.Point2D;
@@ -103,36 +101,17 @@ public class PointSET {
 			throw new IllegalArgumentException();
 		}
 
-		PointContainer[] pca = new PointContainer[set.size()];
-
-		int i = 0;
+		Point2D nearestPoint = null;
+		double nearestDistance = 10000;
+		double distance;
 		for (Point2D ps : set) {
-			PointContainer pc = new PointContainer(ps, ps.distanceTo(p));
-			pca[i++] = pc;
+			distance = ps.distanceSquaredTo(p);
+			if (distance < nearestDistance) {
+				nearestDistance = distance;
+				nearestPoint = ps;
+			}
 		}
-		Arrays.sort(pca, new PointContainerComparator());
-
-		return pca[0].point;
-	}
-
-	private class PointContainer {
-
-		PointContainer(Point2D point, double distance) {
-			this.point = point;
-			this.distance = distance;
-		}
-
-		public Point2D point;
-		public double distance;
-	}
-
-	private class PointContainerComparator implements Comparator<PointContainer> {
-
-		@Override
-		public int compare(PointContainer pc1, PointContainer pc2) {
-
-			return (int) (pc1.distance - pc2.distance);
-		}
+		return nearestPoint;
 	}
 
 	/**
@@ -141,25 +120,7 @@ public class PointSET {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		PointSET ps = new PointSET();
-		ps.insert(new Point2D(1, 1));
-		ps.insert(new Point2D(1, 2));
-		ps.insert(new Point2D(1, 3));
-		ps.insert(new Point2D(2, 2));
-		ps.insert(new Point2D(2, 3));
-		ps.insert(new Point2D(3, 3));
 
-		System.out.println("Range:");
-		RectHV rect = new RectHV(1, 1, 2, 2);
-		Iterable<Point2D> it = ps.range(rect);
-		for (Point2D p : it) {
-			System.out.println(p.toString());
-		}
-
-		Point2D p = new Point2D(1.1, 1.0);
-		p = ps.nearest(p);
-		System.out.println("Nearest:");
-		System.out.println(p);
 	}
 
 }
