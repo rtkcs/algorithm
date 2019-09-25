@@ -1,5 +1,7 @@
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 
 import edu.princeton.cs.algs4.Point2D;
 import edu.princeton.cs.algs4.RectHV;
@@ -121,6 +123,10 @@ public class KdTree {
 			throw new IllegalArgumentException();
 		}
 
+		if (this.contains(p)) {
+			return;
+		}
+
 		if (this.root == null) {
 			NodeX rootNodeX = new NodeX(p, null, null);
 			this.root = rootNodeX;
@@ -132,6 +138,7 @@ public class KdTree {
 	}
 
 	private void insert(Point2D point, Node parent) {
+
 		// parent is NodeY
 		if (parent instanceof NodeY) {
 			// leftChild
@@ -333,18 +340,35 @@ public class KdTree {
 			throw new IllegalArgumentException();
 		}
 
-		rect.xmin();
-		rect.ymin();
-		rect.xmax();
-		rect.ymax();
+		List<Point2D> list = new ArrayList<>();
 
-		Point2D minP = new Point2D(rect.xmin(), rect.ymin());
-		Point2D maxP = new Point2D(rect.xmax(), rect.ymax());
-
-//		TreeSet<Point2D> ts = new TreeSet<>();
 		// traverse tree and add relevand Points to ts;
+		range(rect, list, this.root);
+		return list;
+	}
 
-		return null;
+	private void range(RectHV rect, List<Point2D> list, Node parent) {
+		
+		if (parent == null) {
+			return;
+		}
+		if (parent.point.x() >= rect.xmin() && parent.point.x() <= rect.xmax() 
+				&& parent.point.y() >= rect.ymin() && parent.point.y() <= rect.ymax()) {
+			list.add(parent.point);
+		}
+		if (parent instanceof NodeX) {
+			if (parent.point.x() >= rect.xmin()) {
+				range(rect, list, parent.leftChild);
+			} else {
+				range(rect, list, parent.rightChild);
+			}
+		} else {
+			if (parent.point.y() >= rect.ymax()) {
+				range(rect, list, parent.leftChild);
+			} else {
+				range(rect, list, parent.rightChild);
+			}
+		}
 	}
 
 	/**

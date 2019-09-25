@@ -5,7 +5,8 @@ public class KdTreeTest {
 
 	public static void main(String[] args) {
 //		test1();
-		test2();
+//		test2();
+		test3();
 	}
 	
 	private static void test1() {
@@ -65,5 +66,12 @@ public class KdTreeTest {
 		RectHV rect = new RectHV(0.5, 0.5, 8, 8);
 		Iterable<Point2D> it = kdTree.range(rect);
 		it.forEach(point -> {System.out.println("["+point.x()+", "+point.y()+"]");});
+	}
+	
+	private static void test3() {
+		KdTree kdTree = new KdTree();
+		kdTree.insert(new Point2D(0.2, 0.3));
+		kdTree.insert(new Point2D(0.2, 0.3));
+		System.out.println(kdTree.size());
 	}
 }
