@@ -67,7 +67,34 @@ public class KdTree {
 
 		@Override
 		public String toString() {
-			return toString();
+			StringBuilder sb = new StringBuilder();
+
+			sb.append("Node[leftChild=]");
+			if (this.leftChild != null) {
+				sb.append(this.leftChild.point.toString());
+			} else {
+				sb.append("null");
+			}
+
+			sb.append(", point=");
+			sb.append(this.point.toString());
+
+			sb.append(", rightChild=");
+			if (this.rightChild != null) {
+				sb.append(this.rightChild.toString());
+			} else {
+				sb.append("null");
+			}
+
+			sb.append(", parent=");
+			if (this.parent != null) {
+				sb.append(this.parent.toString());
+			} else {
+				sb.append("null");
+			}
+
+			sb.append("]");
+			return sb.toString();
 		}
 	}
 
@@ -79,7 +106,34 @@ public class KdTree {
 
 		@Override
 		public String toString() {
-			return toString();
+			StringBuilder sb = new StringBuilder();
+
+			sb.append("Node[leftChild=]");
+			if (this.leftChild != null) {
+				sb.append(this.leftChild.point.toString());
+			} else {
+				sb.append("null");
+			}
+
+			sb.append(", point=");
+			sb.append(this.point.toString());
+
+			sb.append(", rightChild=");
+			if (this.rightChild != null) {
+				sb.append(this.rightChild.toString());
+			} else {
+				sb.append("null");
+			}
+
+			sb.append(", parent=");
+			if (this.parent != null) {
+				sb.append(this.parent.toString());
+			} else {
+				sb.append("null");
+			}
+
+			sb.append("]");
+			return sb.toString();
 		}
 	}
 
@@ -348,24 +402,30 @@ public class KdTree {
 	}
 
 	private void range(RectHV rect, List<Point2D> list, Node parent) {
-		
+
 		if (parent == null) {
 			return;
 		}
-		if (parent.point.x() >= rect.xmin() && parent.point.x() <= rect.xmax() 
+		if (parent.point.x() >= rect.xmin() && parent.point.x() <= rect.xmax() // --
 				&& parent.point.y() >= rect.ymin() && parent.point.y() <= rect.ymax()) {
 			list.add(parent.point);
 		}
 		if (parent instanceof NodeX) {
-			if (parent.point.x() >= rect.xmin()) {
+			if (parent.point.x() >= rect.xmin() && parent.point.x() <= rect.xmax()) {
 				range(rect, list, parent.leftChild);
-			} else {
+				range(rect, list, parent.rightChild);
+			} else if (parent.point.x() >= rect.xmin()) {
+				range(rect, list, parent.leftChild);
+			} else if (parent.point.x() <= rect.xmax()) {
 				range(rect, list, parent.rightChild);
 			}
 		} else {
-			if (parent.point.y() >= rect.ymax()) {
+			if (parent.point.y() >= rect.ymin() && parent.point.y() <= rect.ymax()) {
 				range(rect, list, parent.leftChild);
-			} else {
+				range(rect, list, parent.rightChild);
+			} else if (parent.point.y() >= rect.ymin()) {
+				range(rect, list, parent.leftChild);
+			} else if (parent.point.y() <= rect.ymax()) {
 				range(rect, list, parent.rightChild);
 			}
 		}
@@ -382,32 +442,20 @@ public class KdTree {
 			throw new IllegalArgumentException();
 		}
 
-		PointContainer[] pca = new PointContainer[this.size];
-
-		int i = 0;
-
-		Arrays.sort(pca, new PointContainerComparator());
-
-		return pca[0].point;
+		Point2D best = new Point2D(100.0, 100.0);
+		best = nearest(this.root, p, best);
+		return best;
 	}
 
-	private class PointContainer {
-
-		PointContainer(Point2D point, double distance) {
-			this.point = point;
-			this.distance = distance;
+	private Point2D nearest(Node node, Point2D goal, Point2D best) {
+		if (node == null) {
+			return best;
 		}
-
-		public Point2D point;
-		public double distance;
-	}
-
-	private class PointContainerComparator implements Comparator<PointContainer> {
-
-		@Override
-		public int compare(PointContainer pc1, PointContainer pc2) {
-			return (int) (pc1.distance - pc2.distance);
+		if (node.point.distanceSquaredTo(goal) < node.point.distanceSquaredTo(goal)) {
+			best = node.point;
 		}
+		
+		return best;
 	}
 
 	/**
